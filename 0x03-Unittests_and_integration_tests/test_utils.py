@@ -39,12 +39,18 @@ class TestAccessNestedMap(unittest.TestCase):
         ("http://example.com", {"payload": True}),
         ("http://holberton.io", {"payload": False})
     ])
-    def test_get_json(self, test_url: str, test_payload: Dict) -> None:
+    @patch('requests.get')
+    def test_get_json(self, test_url: str, test_payload: Dict,
+                      mocked_func: MagicMock) -> None:
         """Test the get json"""
         method = {'json.return_value': test_payload}
-        with patch("requests.get", return_value=Mock(**method)) as mock_method:
-            self.assertEqual(get_json(test_url), test_payload)
-            mock_method.assert_called_once_with(test_url)
+        mocked_func.return_value = Mock(**method)
+        self.assertEqual(get_json(test_url), test_payload)
+        mocked_func.assert_called_once_with(test_url)
+
+
+class TestMemoize(unittest.TestCase):
+    """class for the memoize function"""
 
     def test_memoize(self) -> Union[int, callable]:
         """Test the memoize function in utils"""

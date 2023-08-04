@@ -2,9 +2,10 @@
 """Unittests and integration test on a cliemt python sript"""
 
 import client
-import fixtures
+from fixtures import TEST_PAYLOAD
 
 import unittest
+import requests
 from unittest.mock import patch, PropertyMock, MagicMock
 from parameterized import parameterized, parameterized_class
 from typing import Dict
@@ -52,7 +53,8 @@ class TestGithubOrgClient(unittest.TestCase):
             mocked_func.return_value = {'login': "google",
                                         'repos_url': 'https://www.google.com'}
             thing = GithubOrgClient('google')
-            res: list = [repo['name'] for repo in mocked_json.return_value]
+            res: list = [repo['name'] for repo in
+                         mocked_json.return_value]
             self.assertEqual(thing.public_repos(), res)
             mocked_json.assert_called_once()
             mocked_func.assert_called_once()
